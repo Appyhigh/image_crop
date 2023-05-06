@@ -537,9 +537,25 @@ class CropState extends State<Crop> with TickerProviderStateMixin, Drag {
       areaBottom = 1.0;
     }
 
-    setState(() {
-      _area = Rect.fromLTRB(areaLeft, areaTop, areaRight, areaBottom);
-    });
+    final defaultArea = _calculateDefaultArea(
+      viewWidth: _view.width,
+      viewHeight: _view.height,
+      imageWidth: _image?.width,
+      imageHeight: _image?.height,
+    );
+
+    final newArea = Rect.fromLTRB(areaLeft, areaTop, areaRight, areaBottom);
+
+    if (defaultArea.width < newArea.width ||
+        defaultArea.height < newArea.height) {
+      setState(() {
+        _area = defaultArea;
+      });
+    } else {
+      setState(() {
+        _area = newArea;
+      });
+    }
   }
 
   void _handleScaleUpdate(ScaleUpdateDetails details) {
